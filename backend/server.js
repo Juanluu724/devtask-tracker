@@ -34,13 +34,18 @@ app.get('/api/tasks', (req, res) => {
 
 // Crear una nueva tarea
 app.post('/api/tasks', (req, res) => {
-    const { titulo, tecnologia } = req.body;
+    const { titulo, tecnologia, estado, fecha } = req.body;
 
     if (!titulo || !tecnologia) {
         return res.status(400).json({ error: 'Faltan datos obligatorios' });
     }
 
-    const nuevaTarea = new Task({ titulo, tecnologia });
+    const nuevaTarea = new Task({
+        titulo,
+        tecnologia,
+        estado,
+        fecha
+    });
 
     nuevaTarea.save()
         .then(tarea => res.status(201).json(tarea))

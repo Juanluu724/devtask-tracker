@@ -2,6 +2,14 @@ const API_URL = 'http://localhost:3000/api/tasks';
 
 const form = document.getElementById('taskForm');
 const list = document.getElementById('taskList');
+const estadoInput = document.getElementById('estado');
+const fechaInput = document.getElementById('fecha');
+
+// set default date to today
+if (fechaInput) {
+    const today = new Date().toISOString().split('T')[0];
+    fechaInput.value = today;
+}
 
 const fetchTasks = () => fetch(API_URL)
     .then(res => res.json())
@@ -28,7 +36,15 @@ function renderTasks(tasks) {
         tag.className = 'task-tag';
         tag.textContent = task.tecnologia;
 
-        info.append(title, tag);
+        const status = document.createElement('span');
+        status.className = 'task-status';
+        status.textContent = formatEstado(task.estado);
+
+        const meta = document.createElement('span');
+        meta.className = 'task-meta';
+        meta.textContent = formatFecha(task.fecha);
+
+        info.append(title, tag, status, meta);
 
         const actions = document.createElement('div');
         actions.className = 'actions';
@@ -60,14 +76,21 @@ form.addEventListener('submit', e => {
 
     const titulo = document.getElementById('titulo').value;
     const tecnologia = document.getElementById('tecnologia').value;
+    const estado = estadoInput ? estadoInput.value : 'pending';
+    const fecha = fechaInput ? fechaInput.value : undefined;
 
     fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ titulo, tecnologia })
+        body: JSON.stringify({ titulo, tecnologia, estado, fecha })
     })
         .then(() => {
             form.reset();
+            if (fechaInput) {
+                const today = new Date().toISOString().split('T')[0];
+                fechaInput.value = today;
+            }
+            if (estadoInput) estadoInput.value = 'pending';
             return fetchTasks();
         });
 });
@@ -75,4 +98,16 @@ form.addEventListener('submit', e => {
 function deleteTask(id) {
     fetch(`${API_URL}/${id}`, { method: 'DELETE' })
         .then(() => fetchTasks());
+}
+
+function formatEstado(estado) {
+    if (estado === 'done' || estado === 'completada') return 'Hecha';
+    return 'Pendiente';
+}
+
+function formatFecha(fecha) {
+    if (!fecha) return '';
+    const date = new Date(fecha);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleDateString();
 }
