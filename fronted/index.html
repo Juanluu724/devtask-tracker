@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>DevTask Tracker</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <h1>DevTask Tracker</h1>
+
+    <form id="taskForm" class="form">
+        <label>
+            <span>T&iacute;tulo</span>
+            <input type="text" id="titulo" placeholder="Ej. Ajustar endpoint" required>
+        </label>
+        <label>
+            <span>Tecnolog&iacute;a</span>
+            <input type="text" id="tecnologia" placeholder="Ej. React" required>
+        </label>
+        <button type="submit">Guardar</button>
+    </form>
+
+    <h2>Tareas</h2>
+    <ul id="taskList" class="task-list"></ul>
+
+    <script src="script.js"></script>
+</body>
+</html>
